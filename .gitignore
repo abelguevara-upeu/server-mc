@@ -1,0 +1,27 @@
+# Logs y archivos temporales
+*.log
+*.gz
+logs/
+crash-reports/
+debug/
+
+# Carpetas de datos pesados que se regeneran
+world/
+world_nether/
+world_the_end/
+dynmap/
+web/
+
+# Archivos de sesión y caché
+session.lock
+user_jvm_args.txt
+.mixin.out/
+.cache/
+
+# Backups locales
+backups/
+*.zip
+*.tar
+
+# Sistema
+.DS_Store
