@@ -5,12 +5,15 @@ logs/
 crash-reports/
 debug/
 
-# Carpetas de datos pesados que se regeneran
-world/
-world_nether/
-world_the_end/
+# Excluir Dynmap (es enorme y se regenera)
 dynmap/
 web/
+
+# (Opcional) Si el mundo es MUY gigante (más de 1GB), git fallará. 
+# Pero para empezar está bien incluirlo.
+# world/
+# world_nether/
+# world_the_end/
 
 # Archivos de sesión y caché
 session.lock

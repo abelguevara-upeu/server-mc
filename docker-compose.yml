@@ -7,24 +7,56 @@ services:
     environment:
       # Aceptamos el contrato de Mojang
       EULA: "TRUE"
-      
+
       # Tipo de Servidor (Forge)
       TYPE: "FORGE"
       VERSION: "1.20.1"
       FORGE_VERSION: "47.2.0"
-      
+
       # Configuración de rendimiento (3GB para un VPS de 4GB)
       MEMORY: "3072M"
       JVM_OPTS: "-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1"
-      
+
       # Configuración de Juego
       DIFFICULTY: "normal"
       MAX_PLAYERS: "20"
-      ONLINE_MODE: "FALSE"  # Importante: Permite entrar sin cuenta premium (necesario para tu caso)
-      
+      ONLINE_MODE: "FALSE" # Importante: Permite entrar sin cuenta premium (necesario para tu caso)
+
     volumes:
       - ./data:/data
-    
+
+    restart: always
+
+  # Servicio de Respaldo "Sidecar" (IaaC puro)
+  # Se encarga de guardar cambios y subirlos a GitHub automáticamente cada 24h
+  backup:
+    image: alpine/git
+    container_name: mc-backup
+    volumes:
+      # Montamos TODO el directorio actual para acceder a .git y los archivos
+      - .:/repo
+    working_dir: /repo
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        echo "Iniciando servicio de respaldo..."
+        # Configurar git para el contenedor
+        git config --global user.email "backup@vps"
+        git config --global user.name "Backup Bot"
+        git config --global --add safe.directory /repo
+
+        while true; do
+            echo "Esperando 24 horas para el siguiente respaldo..."
+            sleep 86400
+            
+            echo "Ejecutando respaldo..."
+            git add .
+            git commit -m "AutoBackup: \$(date)" || echo "Sin cambios para guardar"
+            git pull --rebase
+            git push
+            echo "Respaldo completado."
+        done
     restart: always
 
 # Para gestionar esto localmente:
