@@ -27,7 +27,8 @@ git clone "https://$USER:$TOKEN@github.com/$USER/$REPO.git" /home/minecraft-dock
 
 echo ">>> INICIANDO..."
 cd /home/minecraft-docker
-docker-compose up -d
+# Intentar usar el comando moderno (v2), si falla usar el antiguo (v1)
+docker compose up -d || docker-compose up -d
 echo "¡LISTO!"
 EOF
 chmod +x install.sh && ./install.sh
