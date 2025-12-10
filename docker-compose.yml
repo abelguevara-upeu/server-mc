@@ -21,7 +21,6 @@ services:
       DIFFICULTY: "normal"
       MAX_PLAYERS: "20"
       ONLINE_MODE: "FALSE" # Importante: Permite entrar sin cuenta premium (necesario para tu caso)
-      EXTRA_ARGS: "--safeMode"
 
     volumes:
       - ./data:/data
